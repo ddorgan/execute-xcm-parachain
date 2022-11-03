@@ -2,6 +2,13 @@
 
 A parachain setup for testing the use of `pallet_xcm::execute` based on the parachain template.
 
+
+## Example Transfer
+
+```
+yarn run:api tx.polkadotXcm.limitedReserveTransferAssets'{"v1":{"parents":1,"interior":{"x1":{"parachain":3000}}}}''{"v1":{"parents":0,"interior":{"x1":{"AccountId32": {"id":"0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d","network": "Any"}}}}}' '{"v1": [ {"id": { "Concrete": {"parents":0,"interior":{"x2": [ {"PalletInstance":12}, {"GeneralIndex":0}] }}},"Fun": { "Fungible": "32089"}}]}' 0 Unlimited  --ws ws://127.0.0.1:9988 --seed "//Alice"
+```
+
 ## Setup
 
 Here is how to get this parachain up and running:

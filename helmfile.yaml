@@ -49,13 +49,11 @@ releases:
             - "--alice"
             - "--discover-local"
             - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
-          ss58Format: "0"
           chainData:
             pruning: 0
- 
- 
         extraLabels:
           validatorAccount: "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY" # Alice address
+          ss58Format: "0"
  
   - name: validator-bob
     namespace: rococo
@@ -79,6 +77,7 @@ releases:
             pruning: 0
         extraLabels:
           validatorAccount: "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc" # Bob address
+          ss58Format: "0"
 
   - name: validator-pool
     namespace: rococo
@@ -96,6 +95,7 @@ releases:
           allowUnsafeRpcMethods: true
           flags:
             - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
+        extraLabels:
           ss58Format: "0"
  
  
@@ -125,6 +125,7 @@ releases:
             - "--force-authoring"
         extraLabels:
           paraId: "2000"
+          ss58Format: "0"
 
  ## Para chain 3k ##
   - name: alice-3k
@@ -152,6 +153,7 @@ releases:
             - "--force-authoring"
         extraLabels:
           paraId: "3000"
+          ss58Format: "0"
 
 ## testnet-manager ##
   - name: testnet-manager

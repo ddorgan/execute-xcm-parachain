@@ -8,30 +8,63 @@ helmDefaults:
 
 releases:
 ## relay chain Rococo ##
-  - name: validator-alice
+  - name: bootnode
     namespace: rococo
     chart: parity/node
-    version: 4.2.3
+    version: 4.2.4
     values:
+      - image:
+          repository: "parity/polkadot"
+          tag: "v0.9.27"
+ 
       - node:
           chain: rococo-local
           replicas: 1
           customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
-          role: authority
+          role: boot
           allowUnsafeRpcMethods: true
           customNodeKey: "91cb59d86820419075b08e3043cd802ba3506388d8b161d2d4acd203af5194c1"
           flags:
-            - "--alice"
-          ss58Format: "0"
+            - "--discover-local"
+          chainData:
+            pruning: 0
         extraLabels:
-          validatorAccount: "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY" # Alice address
           ss58Format: "0"
        
+  - name: validator-alice
+    namespace: rococo
+    chart: parity/node
+    version: 4.2.4
+    values:
+      - image:
+          repository: "parity/polkadot"
+          tag: "v0.9.27"
+      - node:
+          chain: rococo-local
+          replicas: 1
+          customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
+          role: authority
+          allowUnsafeRpcMethods: true
+          flags:
+            - "--alice"
+            - "--discover-local"
+            - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
+          ss58Format: "0"
+          chainData:
+            pruning: 0
+ 
+ 
+        extraLabels:
+          validatorAccount: "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY" # Alice address
+ 
   - name: validator-bob
     namespace: rococo
     chart: parity/node
-    version: 4.2.3
+    version: 4.2.4
     values:
+      - image:
+          repository: "parity/polkadot"
+          tag: "v0.9.27"
       - node:
           chain: rococo-local
           customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
@@ -39,16 +72,38 @@ releases:
           allowUnsafeRpcMethods: true
           replicas: 1
           flags:
-            - "--bob --bootnodes /dns4/validator-alice-node-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
+            - "--bob" 
+            - "--discover-local"
+            - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
+          chainData:
+            pruning: 0
         extraLabels:
           validatorAccount: "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc" # Bob address
+
+  - name: validator-pool
+    namespace: rococo
+    chart: parity/node
+    version: 4.2.4
+    values:
+      - image:
+          repository: "parity/polkadot"
+          tag: "v0.9.27"
+      - node:
+          chain: rococo-local
+          replicas: 2
+          customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
+          role: authority
+          allowUnsafeRpcMethods: true
+          flags:
+            - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC" 
           ss58Format: "0"
+ 
  
 ## Para chain 2k ##
   - name: alice-2k
     namespace: rococo
     chart: parity/node
-    version: 4.2.3
+    version: 4.2.4
     values:
       - image:
           repository: "ddorgan/execute-xcm-parachain"
@@ -61,20 +116,21 @@ releases:
           isParachain: true
           collatorRelayChain:
             flags:
-              - "--execution wasm --bootnodes /dns4/validator-alice-node-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC"
+              - "--execution wasm"
+              - "--bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC"
+              - "--discover-local"
             customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
           flags:
             - "--alice"
             - "--force-authoring"
         extraLabels:
           paraId: "2000"
-          ss58Format: "0"
 
  ## Para chain 3k ##
   - name: alice-3k
     namespace: rococo
     chart: parity/node
-    version: 4.2.3
+    version: 4.2.4
     values:
       - image:
           repository: "ddorgan/execute-xcm-parachain"
@@ -82,19 +138,21 @@ releases:
       - node:
           role: collator
           chain: "3k"
-          command: "/usr/local/bin/parachain-template-node"
           allowUnsafeRpcMethods: true
+          command: "/usr/local/bin/parachain-template-node"
           isParachain: true
           collatorRelayChain:
             flags:
-              - "--execution wasm --bootnodes /dns4/validator-alice-node-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC"
+              - "--execution wasm --bootnodes /dns4/bootnode-0/tcp/30333/p2p/12D3KooWMeR4iQLRBNq87ViDf9W7f6cc9ydAPJgmq48rAH116WoC"
             customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
           flags:
+
+            - "--execution wasm"
             - "--alice"
             - "--force-authoring"
         extraLabels:
           paraId: "3000"
-          ss58Format: "0"
+
 ## testnet-manager ##
   - name: testnet-manager
     namespace: rococo
@@ -107,6 +165,5 @@ releases:
           NODE_WS_PATTERN: "ws://NODE_NAME.rococo:9944"
           HEALTHY_MIN_PEER_COUNT: "1"
           LOG_LEVEL: DEBUG
-      - secrets:
-           SUDO_SEED: "0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a" # Alice
-           VALIDATORS_ROOT_SEED: "test test test test test test test test test test test test"
+          VALIDATORS_ROOT_SEED: "fantasy lounge brown sure vote hobby adjust host exchange picture fragile east"
+          SUDO_SEED: "0xe5be9a5092b81bca64be81d212e7f2f9eba183bb7a90954f7b76361f6edb5c0a" # Alice

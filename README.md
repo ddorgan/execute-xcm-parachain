@@ -3,11 +3,43 @@
 A parachain setup for testing the use of `pallet_xcm::execute` based on the parachain template.
 
 
-## Example Transfer
+## Run Example
+
+### Create chainspec container
 
 ```
-yarn run:api tx.polkadotXcm.limitedReserveTransferAssets'{"v1":{"parents":1,"interior":{"x1":{"parachain":3000}}}}''{"v1":{"parents":0,"interior":{"x1":{"AccountId32": {"id":"0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d","network": "Any"}}}}}' '{"v1": [ {"id": { "Concrete": {"parents":0,"interior":{"x2": [ {"PalletInstance":12}, {"GeneralIndex":0}] }}},"Fun": { "Fungible": "32089"}}]}' 0 Unlimited  --ws ws://127.0.0.1:9988 --seed "//Alice"
+kubectl create -f https://raw.githubusercontent.com/paritytech/testnet-manager/main/local-kubernetes/kube-setup/validators-chainspec.yml
 ```
+### Deploy testing network
+
+```
+helmfile sync
+```
+
+### Onboard paras via gui or cmd line:
+
+```
+curl -X 'POST' 'http://localhost:8080/api/onboard_parachain/2000' -H 'accept: application/json' -d ''
+curl -X 'POST' 'http://localhost:8080/api/onboard_parachain/3000' -H 'accept: application/json' -d ''
+```
+
+### Setup hrmp channels
+
+```
+yarn run:api tx.parasSudoWrapper.sudoEstablishHrmpChannel 2000 3000 8 1024  --ws ws://127.0.0.1:9944 --seed "//Alice" --sudo
+yarn run:api tx.parasSudoWrapper.sudoEstablishHrmpChannel 3000 2000 8 1024  --ws ws://127.0.0.1:9944 --seed "//Alice" --sudo
+```
+
+### Transfer asset from parachain 2k to parachain 3k:
+
+```
+yarn run:api tx.polkadotXcm.limitedReserveTransferAssets '{"v1":{"parents":1,"interior":{"x1":{"parachain":3000}}}}' '{"v1":{"parents":0,"interior":{"x1":{"AccountId32": {"id": "0x90b5ab205c6974c9ea841be688864633dc9ca8a357843eeacf2314649965fe22", "network": "Any"}}}}}' '{"v1": [ {"id": { "Concrete": {"parents":0, "interior":{"x2": [ {"PalletInstance":12}, {"GeneralIndex":0}] }}}, "Fun": { "Fungible": "320008009"}}]}' 0 Unlimited  --ws ws://127.0.0.1:9945 --seed "//Alice"
+```
+
+### Result
+
+See event ```assets.Issued``` to ```Charlie``` event on parachain 3k. 
+
 
 ## Setup
 

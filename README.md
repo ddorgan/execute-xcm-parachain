@@ -38,7 +38,7 @@ yarn run:api tx.polkadotXcm.limitedReserveTransferAssets '{"v1":{"parents":1,"in
 
 ### Result
 
-See event ```assets.Issued``` to ```Charlie``` event on parachain 3k. 
+See ```assets.Issued``` to ```Charlie``` on parachain 3k. 
 
 
 ## Setup

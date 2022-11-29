@@ -15,7 +15,7 @@ releases:
     values:
       - image:
           repository: "parity/polkadot"
-          tag: "v0.9.27"
+          tag: "v0.9.33"
  
       - node:
           chain: rococo-local
@@ -38,7 +38,7 @@ releases:
     values:
       - image:
           repository: "parity/polkadot"
-          tag: "v0.9.27"
+          tag: "v0.9.33"
       - node:
           chain: rococo-local
           replicas: 1
@@ -62,7 +62,7 @@ releases:
     values:
       - image:
           repository: "parity/polkadot"
-          tag: "v0.9.27"
+          tag: "v0.9.33"
       - node:
           chain: rococo-local
           customChainspecUrl: "http://chainspec.rococo/rococo-local.json"
@@ -86,7 +86,7 @@ releases:
     values:
       - image:
           repository: "parity/polkadot"
-          tag: "v0.9.27"
+          tag: "v0.9.33"
       - node:
           chain: rococo-local
           replicas: 2
